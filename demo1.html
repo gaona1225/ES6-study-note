@@ -1,0 +1,584 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ES6demo1</title>
+<style type="text/css">
+  
+</style>
+</head>
+<body>
+  <div id="warning"></div><br/>
+  <div id="warning-es"></div>
+</body>
+<script type="text/javascript" src="jquery-1.12.0.js"></script>
+<script type="text/javascript">
+    $(function(){
+        //$('#warning').html('<h1>我是ES6</h1>');
+        //默认写法
+        $('#warning').html(
+            '<h1>我是ES6</h1>' +
+            '<p>我是ES6--p</p>'
+        );
+
+        //ES6写法
+        $('#warning-es').html(
+            `
+            <h1>我是ES6</h1>
+            <p>我是ES6--p</p>
+            `
+        );
+
+        var a1 = [];
+        for (var i = 0; i < 3; i++) {
+            a1[i] = (function () {
+                return function () {
+                    return i;
+                };
+            })()
+        }
+        a1[1](); // output 3
+
+        var a1 = [];
+        for (let i = 0; i < 3; i++) {
+            a1[i] = (function () {
+                return function () {
+                    return i;
+                };
+            })()
+        }
+        a1[1](); // output 1
+
+        var a2 = [];
+        for (var i = 0; i < 3; i++) {
+            a2[i] = (function (i) {
+                return function () {
+                    return i;
+                };
+            })(i)
+        }
+        a2[1](); // output 1
+
+        for (var i = 0; i < 3; i ++) {
+            var i = 'abc';
+            console.log(i); //output 一次 abc
+        }
+
+        for (let i = 0; i < 3; i ++) {
+            let i = 'abc';
+            console.log(i); // output 三次 abc
+        }
+
+        function fn1 () {
+            let n = 5;
+            if (true) {
+                let n = 3;
+                console.log(n); // output 3
+            }
+            console.log(n); // output 5
+        }
+        fn1();
+
+        const foo = {}
+        foo.name = 'gg';
+        foo.age = '18';
+        console.log(foo);
+
+        const bar = Object.freeze({});
+        bar.name = '11';
+        console.log(bar);
+
+
+        let constantize = (obj) => {
+            Object.freeze(obj);
+            Object.keys(obj).forEach( (key, i) => {
+                if (typeof obj[key] === 'object') {
+                    constantize( obj[key] );
+                }
+            });
+        };
+
+        let [head, ...tail] = [1, 2, 3, 4, , 5];
+
+        let [x, y, z] = new Set(['a', 'b', 'c']);
+
+        function* fibs () {
+            let a = 0;
+            let b = 1;
+            while (true) {
+                yield a;
+                [a, b] = [b, a+b];
+            }
+        }
+        let [first, second, third, fourth, fifth, sixth] = fibs();
+
+
+        let [foo = true] = [];
+        console.log(foo);
+        let [x, y = 'b'] = ['a'];
+        let [x, y = 'b'] = ['a', undefined];
+
+
+        function f () {
+            console.log('aaa');
+        }
+        let [x = f()] = [1];
+
+        let [x = 1, y = x] = [];
+
+        let { bar, foo } = { foo: 'aaa', bar: 'bbb'}
+        let { baz } = { foo: 'aaa', bar: 'bbb'}
+
+
+        let { foo: baz } = { foo: 'aaa', bar: 'bbb'};
+
+        let obj = { first: 'hello', last: 'world'}
+        let { first: f, last: l} = obj;
+
+        [1, undefined, 3].map((x = 'yes') => x);
+
+        let x = 1;
+        let y = 2;
+        [x, y] = [y, x];
+
+
+        function fn ([x, y, z]) {
+            let jsonData = {
+                x: x,
+                y: y,
+                z: z
+            }
+            console.log(jsonData);
+        }
+        fn ([1, 2, 3]);
+
+        function fn ({x, y, z}) {
+            let jsonData = {
+                x: x,
+                y: y,
+                z: z
+            }
+            console.log(jsonData);
+        }
+        fn ({z: 1, y: 2, x: 3});
+
+        const map = new Map();
+        map.set('first', 'hello');
+        map.set('second', 'world');
+
+        for (let [key, value] of map) {
+            console.log(`${key} is ${value}`);
+        }
+
+        for (let [key] of map) {
+            console.log(`${key} haha`);
+        }
+
+        for (let [, value] of map) {
+            console.log(`${value} haha`);
+        }
+
+        let s = 'Hello world!';
+        s.startsWith('Hello');
+        s.endsWith('!');
+        s.includes('o');
+
+        'x'.padStart(5, 'ab');
+        'x'.padEnd(4, 'ss');
+
+
+        let x = 1;
+        let y = 2;
+
+        `${x} + ${y} = ${x + y}`;
+
+        let obj = {x: 1, y: 2};
+        `obj.x + obj.y is ${obj.x + obj.y}`
+
+        let fn = () => {
+            return "Hello world";
+        }
+        `foo ${fn()} bar`
+
+
+        const tmpl = addrs => `
+          <table>
+          ${addrs.map(addr => `
+            <tr><td>${addr.first}</td></tr>
+            <tr><td>${addr.last}</td></tr>
+          `).join('')}
+          </table>
+        `;
+
+        const data = [
+            { first: '<Jane>', last: 'Bond' },
+            { first: 'Lars', last: '<Croft>' }
+        ]
+
+        console.log(tmpl(data));
+
+
+        let template = `
+            <ul>
+                <% for (let i = 0; i < data.supplies.length; i ++) { %>
+                    <li><%= data.supplies[i] %></li>
+                <% } %>
+            </ul>
+        `
+        let evalExpr = /<%=(.+?)%>/g;
+        let expr = /<%([\s\S]+?)%>/g;
+
+        template = template
+          .replace(evalExpr, '`); \n  echo( $1 ); \n  echo(`')
+          .replace(expr, '`); \n $1 \n  echo(`');
+
+        template = 'echo(`' + template + '`);';
+
+        let script =
+            `(function parse(data){
+              let output = "";
+
+              function echo(html){
+                output += html;
+              }
+
+              ${ template }
+
+              return output;
+            })`;
+
+        return script;
+    });
+
+    let fnName = (args1, ...args) => {
+        console.log(args1);
+        console.log(args);
+    }
+    fnName(1, 2, 3, 4, 5);
+
+    let fnName = (str) => {
+        console.log(str);
+    }
+    let str = fnName`Hello world`;
+
+
+    let log = (x, y = 'World') => {
+        console.log(x, y);
+    }
+    log('Hello');
+    log('Hello', 'gg');
+    log('Hello', '');
+
+
+    let f = (x = 1, y) => {
+        return [x, y];
+    }
+
+    f();
+
+    let x = 1;
+    let f = (y = x) => {
+        let x = 2;
+        console.log(y);
+    }
+    f();
+
+    let foo = 'outer';
+    const bar = (func = () => foo) => {
+        let foo = 'inner';
+        console.log(func());
+    }
+
+    bar();
+
+    let add = (...values) => {
+        let sum = 0;
+        for (let val of values) {
+            sum += val;
+        }
+        console.log(`sum is ${sum}`);
+    }
+
+    add(2, 3, 4);
+
+    const sortNumbers = (...numbers) => {
+        console.log(numbers.length);
+        console.log(numbers.sort());
+    }
+
+    sortNumbers(5, 2, 8);
+
+    function fn (n) {
+        if (n === 1) {
+            return 1;
+        } else {
+            return n * fn(n - 1);
+        }
+    }
+    fn(5);
+
+    function fn (n) {
+        if (n <= 1) {
+            return 1;
+        } else {
+            return fn(n - 1) + fn(n - 2);
+        }
+    }
+    fn(10);
+
+    const go = function*(){
+        yield 1;
+        yield 2;
+        yield 3;
+    };
+    [...go()];
+
+    for (let i of ['a', 'b'].keys()) {
+        console.log(i);
+    }
+
+    let arr = ['a', 'b'];
+    for (let i of arr) {
+        console.log(i);
+    }
+
+    let arr = ['a', 'b'];
+    for (let [index, elem] of arr.entries()) {
+        console.log(`index is ${index}, value is ${elem}`);
+    }
+
+    let arr = [1, , 2];
+    arr.map(() => console.log(1));
+
+    let f = (x, y) => {
+        return {x: x, y: y}
+    }
+
+    f(1, 2);
+
+    const keyA = {a: 1};
+    const keyB = {b: 2};
+
+    const myObject = {
+        [keyA]: 'value1',
+        [keyB]: 'value2'
+    }
+
+    console.log(myObject);
+
+    const key1 = Symbol('description');
+    const key2 = Symbol();
+    let obj = {
+      [key1]() {},
+      [key2]() {},
+    };
+    obj[key1].name // "[description]"
+    obj[key2].name
+
+
+    const s = new Set();
+    [2, 3, 5, 4, 5, 2, 2].forEach(x => s.add(x));
+
+    for (let i of s) {
+        console.log(`i is ${i} and value is ${s[i]}`);
+    }
+
+    let set = new Set(['red', 'green', 'blue']);
+    for (let item of set.entries()) {
+        console.log(`item is ${item}, key is ${item[0]}, value is ${item[1]}`);
+    }
+
+    var handler = {
+        get: (target, name) => {
+            if (name === 'prototype') {
+                console.log('aaa')
+                return Object.prototype;
+            }
+            return `Hello, ${name}`;
+        },
+
+        apply: (target, thisBinding, args) => {
+            console.log('bbb')
+            return args[0];
+        },
+
+        construct: (target, args) => {
+            console.log('ccc');
+            return {value: args[1]};
+        }
+    };
+
+    var fproxy = new Proxy((x, y) => {
+        return x + y;
+    }, handler);
+
+    fproxy(1, 2); // output 1
+    // new fproxy(1, 2);
+    fproxy.prototype === Object.prototype // true
+    fproxy.foo === "Hello, foo" // true
+
+    let target = () => {
+        return 'I am the target';
+    }
+
+    let handler = {
+        apply: () => {
+            return 'I am a proxy';
+        }
+    };
+
+    let p = new Proxy(target, handler);
+    p();
+
+    let promise = new Promise((resolve, reject) => {
+        console.log('Promise');
+        // resolve();
+        reject()
+    });
+
+    promise.then(() => {
+        //alert('haha');
+        console.log('resolved.');
+    }, () => {
+        console.log('reject.')
+    });
+
+    console.log('hi');
+
+    let loadImgAsync = (url) => {
+        return new Promise((resolve, reject) => {
+            const image = new Image();
+            image.onload = () => {
+                resolve();
+            }
+
+            image.onerror = () => {
+                reject(new Error(`Could not load image at ${url}`));
+            }
+
+            image.src = url;
+        });
+    };
+    loadImgAsync('https://www.baidu.com/img/bd_logo1.png').then(() => {
+        console.log('resolve haha');
+    }, () => {
+        console.log('reject...');
+    });
+
+    let promise = new Promise((resolve, reject) => {
+        console.log('promise');
+        resolve('gaona');
+    });
+    promise.then((name) => {
+        console.log(`my name is ${name}.`);
+        console.log('111 resolve.');
+        return name;
+    }, () => {
+        console.log('111 reject.');
+    }).then((name) => {
+        console.log(`my name is ${name}.`);
+        console.log('333 resolve.');
+        return name;
+    }, () => {
+        console.log('222 reject.');
+    }).then((name) => {
+        console.log(`my name is ${name}.`);
+        console.log('222 resolve.');
+    }, () => {
+        console.log('333 reject.');
+    });
+    console.log('haha');
+
+
+    let promise = new Promise((resolve, reject) => {
+        console.log('promise');
+        resolve('gaona');
+    });
+    promise.then((name) => {
+        console.log(`my name is ${name}.`);
+        console.log('111 resolve.');
+        return name;
+    }).then((name) => {
+        console.log(`my name is ${name}.`);
+        console.log(x);
+        console.log('333 resolve.');
+        return name;
+    }).then((name) => {
+        console.log(`my name is ${name}.`);
+        console.log('222 resolve.');
+    }).catch((error) => {
+        console.log(`carry on ${error}`);
+    }).done();
+    console.log('haha');
+
+
+    let promise = new Promise((resolve, reject) => {
+        console.log('promise');
+        resolve('gaona');
+    });
+    (async () => promise.then((name) => {
+        console.log(`my name is ${name}.`);
+        console.log('111 resolve.');
+        return name;
+    }).catch((error) => {
+        console.log(`carry on ${error}`);
+    }))()
+    console.log('haha');
+
+    const f = () => {
+        console.log('now');
+    }
+    // Promise.resolve().then(f);
+    // (async () => f())();
+    f();
+    console.log('next');
+
+    let es6 = new Map();
+    es6.set('name', 'gaona');
+    es6.set('age', 31);
+    es6.set('sex', 'woman');
+    for (let [name, value] of es6) {
+        console.log(`key is ${name} and value is ${value}`);
+    }
+
+    function* test() {
+        yield 'hello';
+        yield 'world';
+        return 'ending';
+    }
+
+    var hw = test();
+    hw.next();
+
+    let gaonaTest = 'gaonaHaha';
+    function* demo () {
+        console.log(`Hello ${yield gaonaTest}`)
+    }
+    let testFn = demo();
+
+
+    let myIter = [];
+    myIter[Symbol.iterator] = function* () {
+        yield 1;
+        yield 2;
+        yield 3;
+    };
+    [...myIter];
+
+
+    let timeout = (ms) => {
+        return new Promise((resolve) => {
+            console.log('pp');
+            setTimeout(resolve, ms);
+        })
+    }
+
+    async function asyncPrint(value, ms) {
+        await timeout(ms);
+        console.log(`value is ${value}`);
+    }
+
+    asyncPrint('hello world', 50);
+
+</script>
+</html>
